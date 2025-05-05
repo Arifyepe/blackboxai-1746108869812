@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Fetch user's orders
 $stmt = $conn->prepare("
-    SELECT o.*, od.quantity, od.price, p.name as product_name, p.category
+    SELECT o.*, od.quantity, od.price, od.size, p.name as product_name, p.category
     FROM orders o
     JOIN order_details od ON o.id = od.order_id
     JOIN products p ON od.product_id = p.id
@@ -97,16 +97,36 @@ $orders = $stmt->fetchAll();
                                     <?php echo date('d F Y H:i', strtotime($order['created_at'])); ?>
                                 </p>
                             </div>
-                            <div class="px-4 py-2 rounded-full <?php 
-                                echo match($order['status']) {
-                                    'pending' => 'bg-yellow-100 text-yellow-800',
-                                    'confirmed' => 'bg-green-100 text-green-800',
-                                    'shipped' => 'bg-blue-100 text-blue-800',
-                                    'delivered' => 'bg-gray-100 text-gray-800',
-                                    default => 'bg-gray-100 text-gray-800'
-                                };
-                            ?>">
-                                <?php echo ucfirst($order['status']); ?>
+                            <!-- Order Status Timeline -->
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <div class="px-3 py-1 rounded-full text-sm <?php 
+                                        echo $order['status'] === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                            ($order['status'] === 'confirmed' || $order['status'] === 'shipped' || $order['status'] === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600');
+                                    ?>">
+                                        <i class="fas fa-clock mr-1"></i> Pending
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                                    <div class="px-3 py-1 rounded-full text-sm <?php 
+                                        echo $order['status'] === 'confirmed' ? 'bg-yellow-100 text-yellow-800' : 
+                                            ($order['status'] === 'shipped' || $order['status'] === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600');
+                                    ?>">
+                                        <i class="fas fa-box mr-1"></i> Dikemas
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                                    <div class="px-3 py-1 rounded-full text-sm <?php 
+                                        echo $order['status'] === 'shipped' ? 'bg-yellow-100 text-yellow-800' : 
+                                            ($order['status'] === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600');
+                                    ?>">
+                                        <i class="fas fa-truck mr-1"></i> Dikirim
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                                    <div class="px-3 py-1 rounded-full text-sm <?php 
+                                        echo $order['status'] === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600';
+                                    ?>">
+                                        <i class="fas fa-check-circle mr-1"></i> Selesai
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -116,6 +136,7 @@ $orders = $stmt->fetchAll();
                                     <h4 class="font-semibold"><?php echo $order['product_name']; ?></h4>
                                     <p class="text-gray-600">Kategori: <?php echo ucfirst($order['category']); ?></p>
                                     <p class="text-gray-600">Jumlah: <?php echo $order['quantity']; ?></p>
+                                    <p class="text-gray-600">Ukuran: <?php echo $order['size']; ?></p>
                                 </div>
                                 <div class="text-right">
                                     <p class="font-semibold"><?php echo formatRupiah($order['price']); ?></p>
@@ -128,9 +149,39 @@ $orders = $stmt->fetchAll();
                             <p class="text-gray-600"><?php echo nl2br(htmlspecialchars($order['shipping_address'])); ?></p>
                         </div>
 
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold mb-2">Metode Pembayaran:</h4>
+                                <p class="text-gray-600"><?php echo $order['payment_method']; ?></p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Metode Pengiriman:</h4>
+                                <p class="text-gray-600">
+                                    <?php echo $order['shipping_method'] === 'sicepat' ? 'SiCepat Express (1-2 hari)' : 'JNE Reguler (1-3 hari)'; ?>
+                                </p>
+                            </div>
+                        </div>
+
                         <div class="mt-4">
-                            <h4 class="font-semibold mb-2">Metode Pembayaran:</h4>
-                            <p class="text-gray-600"><?php echo $order['payment_method']; ?></p>
+                            <h4 class="font-semibold mb-2">Rincian Pembayaran:</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">Subtotal Produk:</span>
+                                    <span><?php echo formatRupiah($order['price'] * $order['quantity']); ?></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">Biaya Pengiriman:</span>
+                                    <span><?php echo formatRupiah($order['shipping_fee']); ?></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">Biaya Layanan:</span>
+                                    <span><?php echo formatRupiah($order['service_fee']); ?></span>
+                                </div>
+                                <div class="flex justify-between font-semibold border-t pt-2 mt-2">
+                                    <span>Total:</span>
+                                    <span><?php echo formatRupiah($order['total_amount']); ?></span>
+                                </div>
+                            </div>
                         </div>
 
                         <?php if ($order['status'] === 'pending'): ?>
