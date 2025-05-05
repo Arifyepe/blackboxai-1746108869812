@@ -99,11 +99,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </button>
             </form>
 
-            <p class="mt-4 text-center text-gray-600">
-                <a href="../index.php" class="text-red-600 hover:text-red-700">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Halaman Utama
-                </a>
-            </p>
+            <div class="mt-4 text-center space-y-2">
+                <p class="text-gray-600">
+                    Belum punya akun? 
+                    <a href="register.php" class="text-red-600 hover:text-red-700">Register</a>
+                </p>
+                <p>
+                    <a href="../index.php" class="text-red-600 hover:text-red-700">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali ke Halaman Utama
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 
