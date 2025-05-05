@@ -11,6 +11,7 @@ $products = $stmt->fetchAll();
 $shoes = array_filter($products, fn($p) => $p['type'] == 'shoes');
 $jerseys = array_filter($products, fn($p) => $p['type'] == 'jersey');
 $accessories = array_filter($products, fn($p) => $p['type'] == 'headband');
+$rackets = array_filter($products, fn($p) => $p['type'] == 'racket');
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +80,30 @@ $accessories = array_filter($products, fn($p) => $p['type'] == 'headband');
     <div class="container mx-auto px-4 py-8">
         <h1 class="font-russo text-4xl text-red-600 mb-8 text-center">Bulutangkis</h1>
 
+        <!-- Rackets Section -->
+        <section class="mb-12">
+            <h2 class="font-russo text-2xl mb-6">Raket Bulutangkis</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <?php foreach($rackets as $racket): ?>
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://images.pexels.com/photos/3660204/pexels-photo-3660204.jpeg" 
+                         class="w-full h-48 object-cover" alt="<?= $racket['name'] ?>">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2"><?= $racket['name'] ?></h3>
+                        <p class="text-gray-600 mb-2">Brand: <?= $racket['brand'] ?></p>
+                        <p class="text-red-600 font-bold mb-4"><?= formatRupiah($racket['price']) ?></p>
+                        <?php if(isLoggedIn()): ?>
+                        <button onclick="location.href='beli.php?id=<?= $racket['id'] ?>'" 
+                                class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
+                            Beli
+                        </button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
+
         <!-- Jerseys Section -->
         <section class="mb-12">
             <h2 class="font-russo text-2xl mb-6">Jersey Bulutangkis</h2>
@@ -91,14 +116,14 @@ $accessories = array_filter($products, fn($p) => $p['type'] == 'headband');
                 foreach($teams as $team):
                 ?>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3755440/pexels-photo-3755440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                    <img src="https://images.pexels.com/photos/3755440/pexels-photo-3755440.jpeg" 
                          class="w-full h-48 object-cover" alt="<?= $team ?> Jersey">
                     <div class="p-4">
                         <h3 class="font-semibold text-lg mb-2">Jersey <?= $team ?></h3>
                         <p class="text-gray-600 mb-2">Ukuran: S, M, L, XL</p>
                         <p class="text-red-600 font-bold mb-4"><?= formatRupiah(500000) ?></p>
                         <?php if(isLoggedIn()): ?>
-                        <button onclick="location.href='beli.php?id=badminton_jersey_<?= $team ?>'" 
+                        <button onclick="location.href='beli.php?id=<?= urlencode("badminton_jersey_${team}") ?>'" 
                                 class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
                             Beli
                         </button>
@@ -115,14 +140,14 @@ $accessories = array_filter($products, fn($p) => $p['type'] == 'headband');
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <?php for($i = 1; $i <= 20; $i++): ?>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src="https://images.pexels.com/photos/1598508/pexels-photo-1598508.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                    <img src="https://images.pexels.com/photos/1598508/pexels-photo-1598508.jpeg" 
                          class="w-full h-48 object-cover" alt="Badminton Shoes <?= $i ?>">
                     <div class="p-4">
                         <h3 class="font-semibold text-lg mb-2">Sepatu Bulutangkis Pro <?= $i ?></h3>
                         <p class="text-gray-600 mb-2">Ukuran: 32-45</p>
                         <p class="text-red-600 font-bold mb-4"><?= formatRupiah(1500000) ?></p>
                         <?php if(isLoggedIn()): ?>
-                        <button onclick="location.href='beli.php?id=badminton_shoes_<?= $i ?>'" 
+                        <button onclick="location.href='beli.php?id=<?= "badminton_shoes_${i}" ?>'" 
                                 class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
                             Beli
                         </button>
@@ -139,13 +164,13 @@ $accessories = array_filter($products, fn($p) => $p['type'] == 'headband');
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <?php for($i = 1; $i <= 10; $i++): ?>
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src="https://images.pexels.com/photos/6823/team-youth-shirt-soccer.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                    <img src="https://images.pexels.com/photos/6823/team-youth-shirt-soccer.jpg" 
                          class="w-full h-48 object-cover" alt="Headband <?= $i ?>">
                     <div class="p-4">
                         <h3 class="font-semibold text-lg mb-2">Headband Pro <?= $i ?></h3>
                         <p class="text-red-600 font-bold mb-4"><?= formatRupiah(100000) ?></p>
                         <?php if(isLoggedIn()): ?>
-                        <button onclick="location.href='beli.php?id=headband_<?= $i ?>'" 
+                        <button onclick="location.href='beli.php?id=<?= "headband_${i}" ?>'" 
                                 class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
                             Beli
                         </button>
