@@ -84,17 +84,49 @@ require_once 'config.php';
     <div class="container mx-auto px-4 py-12">
         <h2 class="font-russo text-3xl text-red-600 mb-8 text-center">Best Sellers</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Best Seller Items -->
+            <!-- Nike Mercurial -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <img src="https://images.pexels.com/photos/2385477/pexels-photo-2385477.jpeg" 
-                     class="w-full h-48 object-cover" alt="Product">
+                     class="w-full h-48 object-cover" alt="Nike Mercurial">
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-2">Nike Mercurial</h3>
                     <p class="text-gray-600 mb-2">Sepatu Sepakbola</p>
                     <p class="text-red-600 font-bold">Rp 2,000,000</p>
                 </div>
             </div>
-            <!-- Add more best seller items here -->
+
+            <!-- Indonesia Home Jersey -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.pexels.com/photos/6786901/pexels-photo-6786901.jpeg" 
+                     class="w-full h-48 object-cover" alt="Indonesia Home Jersey">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Indonesia Home Jersey</h3>
+                    <p class="text-gray-600 mb-2">Jersey Sepakbola</p>
+                    <p class="text-red-600 font-bold">Rp 1,000,000</p>
+                </div>
+            </div>
+
+            <!-- Nike Lunar Gato -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.pexels.com/photos/5730956/pexels-photo-5730956.jpeg" 
+                     class="w-full h-48 object-cover" alt="Nike Lunar Gato">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Nike Lunar Gato</h3>
+                    <p class="text-gray-600 mb-2">Sepatu Futsal</p>
+                    <p class="text-red-600 font-bold">Rp 1,000,000</p>
+                </div>
+            </div>
+
+            <!-- Indonesia Badminton Jersey -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.pexels.com/photos/6203791/pexels-photo-6203791.jpeg" 
+                     class="w-full h-48 object-cover" alt="Indonesia Badminton Jersey">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-2">Indonesia Badminton Jersey</h3>
+                    <p class="text-gray-600 mb-2">Jersey Bulutangkis</p>
+                    <p class="text-red-600 font-bold">Rp 500,000</p>
+                </div>
+            </div>
         </div>
     </div>
 
