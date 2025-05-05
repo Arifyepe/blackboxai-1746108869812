@@ -24,33 +24,38 @@ $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 $default_address = $user['address'];
 
+// Fetch product details
+$stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+$stmt->execute([$product_id]);
+$product = $stmt->fetch();
+
+if (!$product) {
+    header("Location: index.php");
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $shipping_address = htmlspecialchars($_POST['shipping_address']);
     $payment_method = $_POST['payment_method'];
     $quantity = (int)$_POST['quantity'];
+    $size = $_POST['size'];
 
-    if (empty($shipping_address) || empty($payment_method) || $quantity < 1) {
+    if (empty($shipping_address) || empty($payment_method) || $quantity < 1 || empty($size)) {
         $error = 'Semua field harus diisi dengan benar';
     } else {
-        try {
-            $conn->beginTransaction();
-
-            // Create order
-            $stmt = $conn->prepare("INSERT INTO orders (user_id, shipping_address, payment_method, status) VALUES (?, ?, ?, 'pending')");
-            $stmt->execute([$_SESSION['user_id'], $shipping_address, $payment_method]);
-            $order_id = $conn->lastInsertId();
-
-            // Add order details
-            $stmt = $conn->prepare("INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$order_id, $product_id, $quantity, 0]); // Price will be updated based on product
-
-            $conn->commit();
-            $success = 'Pesanan berhasil dibuat! Silahkan melakukan pembayaran.';
-            header("refresh:2;url=history.php");
-        } catch(PDOException $e) {
-            $conn->rollBack();
-            $error = 'Terjadi kesalahan. Silahkan coba lagi.';
-        }
+        // Store order data in session
+        $_SESSION['order_data'] = [
+            'product_id' => $product_id,
+            'shipping_address' => $shipping_address,
+            'payment_method' => $payment_method,
+            'quantity' => $quantity,
+            'size' => $size,
+            'product_name' => $product['name'],
+            'product_price' => $product['price']
+        ];
+        
+        header("Location: pembelian.php");
+        exit();
     }
 }
 ?>
@@ -112,6 +117,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="number" id="quantity" name="quantity" required min="1"
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-red-500"
                            value="1">
+                </div>
+
+                <div>
+                    <label for="size" class="block text-gray-700 mb-2">Ukuran Baju</label>
+                    <select id="size" name="size" required
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-red-500">
+                        <option value="">Pilih ukuran baju</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
                 </div>
 
                 <div>
